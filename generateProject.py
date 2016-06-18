@@ -113,9 +113,6 @@ def getPrograms(myblocks):
             programs.append(base)
     return programs
                 
-programs = ["Program","Program2"]
-myBlocks = ["Drive_CM"]
-
 myBlocks = getMyBlocks()
 programs = getPrograms(myBlocks)
 variables = getVariables("project.lvprojx")

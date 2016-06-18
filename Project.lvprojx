@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='utf-8'?>
+<SourceFile Version="1.0.2.10" xmlns="http://www.ni.com/SourceModel.xsd">
+    <Namespace Name="Default">
+        <Project xmlns="http://www.ni.com/Project.xsd">
+            <Target DocumentTypeIdentifier="VIVMTarget" Name="VI\ Virtual\ Machine">
+                <ProjectReference ReferenceName="NationalInstruments.VI.VirtualMachine.Runtime, Version=0.0.0.0" ReferencePath="" />
+                <ProjectReference ReferenceName="NationalInstruments.LabVIEW.CoreRuntime, Version=0.0.0.0" ReferencePath="" />
+                <SourceFileReference DocumentTypeIdentifier="NationalInstruments.GuidedHelpFramework.Model.GuidedHelp" Name="Activity\.x3a" RelativeStoragePath="Activity.x3a" StoragePath="Activity.x3a" />
+                <SourceFileReference DocumentTypeIdentifier="NationalInstruments.LabVIEW.VI.Modeling.VirtualInstrument" Name="Program\.ev3p" OverridingDocumentTypeIdentifier="X3VIDocument" RelativeStoragePath="Program.ev3p" StoragePath="Program.ev3p" />
+                <DefinitionReference Bindings="Envoy,DefinitionReference,EmbeddedReference,ProjectItemDragDropDefaultService" DocumentTypeIdentifier="NationalInstruments.ExternalFileSupport.Modeling.ExternalFileType" Name="ActivityAssets\.laz" />
+                <DefinitionReference Bindings="Envoy,DefinitionReference,EmbeddedReference" DocumentTypeIdentifier="NationalInstruments.X3.App.X3FolderLoaderDefinition" Name="vi\.lib_" />
+                <DefinitionReference Bindings="Envoy,DefinitionReference,EmbeddedReference,ProjectItemDragDropDefaultService" DocumentTypeIdentifier="NationalInstruments.ExternalFileSupport.Modeling.ExternalFileType" Name="___ProjectTitle" />
+                <DefinitionReference Bindings="Envoy,DefinitionReference,EmbeddedReference,ProjectItemDragDropDefaultService" DocumentTypeIdentifier="NationalInstruments.ExternalFileSupport.Modeling.ExternalFileType" Name="___CopyrightYear" />
+                <DefinitionReference Bindings="Envoy,DefinitionReference,EmbeddedReference" DocumentTypeIdentifier="NationalInstruments.X3.App.X3FolderLoaderDefinition" Name="vi\.lib_PBR" />
+            </Target>
+            <ProjectSettings>
+                <NamedGlobalData xmlns="http://www.ni.com/X3NamedGlobalData.xsd" />
+                <ProjectOrigin Path="en-US/Internal/FreePlayProgram.ev3" xmlns="http://www.ni.com/X3ProjectOrigin.xsd" />
+                <DaisyChainMode On="False" xmlns="http://www.ni.com/X3ProjectPropertiesModel.xsd" />
+            </ProjectSettings>
+        </Project>
+    </Namespace>
+    <Namespace Name="VI\ Virtual\ Machine">
+        <VIVMTarget xmlns="http://www.ni.com/VIVMTarget.xsd" />
+    </Namespace>
+    <Namespace Name="ActivityAssets\.laz">
+        <ExternalFile xmlns="http://www.ni.com/ExternalFile.xsd">
+            <RelativeStoragePath>ActivityAssets.laz</RelativeStoragePath>
+            <StoragePath />
+        </ExternalFile>
+    </Namespace>
+    <Namespace Name="vi\.lib_">
+        <LoaderDefinition xmlns="http://www.ni.com/LoaderDefinition.xsd">
+            <Type>FolderLoaderDefinition</Type>
+            <Name>vi.lib_</Name>
+            <Location />
+        </LoaderDefinition>
+    </Namespace>
+    <Namespace Name="___ProjectTitle">
+        <ExternalFile xmlns="http://www.ni.com/ExternalFile.xsd">
+            <RelativeStoragePath>___ProjectTitle</RelativeStoragePath>
+            <StoragePath />
+        </ExternalFile>
+    </Namespace>
+    <Namespace Name="___CopyrightYear">
+        <ExternalFile xmlns="http://www.ni.com/ExternalFile.xsd">
+            <RelativeStoragePath>___CopyrightYear</RelativeStoragePath>
+            <StoragePath />
+        </ExternalFile>
+    </Namespace>
+    <Namespace Name="vi\.lib_PBR">
+        <LoaderDefinition xmlns="http://www.ni.com/LoaderDefinition.xsd">
+            <Type>FolderLoaderDefinition</Type>
+            <Name>vi.lib_PBR</Name>
+            <Location />
+        </LoaderDefinition>
+    </Namespace>
+</SourceFile>

@@ -41,7 +41,8 @@ def makeXML(programs, myBlocks, variables):
 
     ## for each program
     for program in programs:
-        ET.SubElement(target, "SourceFileReference", StoragePath=program+".ev3p", RelativeStoragePath=program+".ev3p", OverridingDocumentTypeIdentifier="X3VIDocument", DocumentTypeIdentifier="NationalInstruments.LabVIEW.VI.Modeling.VirtualInstrument", Name=program+"\.ev3p")
+        escName = program.replace(" ","\ ")
+        ET.SubElement(target, "SourceFileReference", StoragePath=program+".ev3p", RelativeStoragePath=program+".ev3p", OverridingDocumentTypeIdentifier="X3VIDocument", DocumentTypeIdentifier="NationalInstruments.LabVIEW.VI.Modeling.VirtualInstrument", Name=escName+"\.ev3p")
     ## end of each program
 
     ET.SubElement(target, "DefinitionReference", DocumentTypeIdentifier="NationalInstruments.ExternalFileSupport.Modeling.ExternalFileType", Name="ActivityAssets\.laz", Bindings="Envoy,DefinitionReference,EmbeddedReference,ProjectItemDragDropDefaultService")

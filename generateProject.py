@@ -51,6 +51,8 @@ def makeXML(programs, myBlocks, variables, resources):
     ET.SubElement(target, "DefinitionReference", OrderedDict([("DocumentTypeIdentifier","NationalInstruments.X3.App.X3FolderLoaderDefinition"), ("Name","vi\.lib_"), ("Bindings","Envoy,DefinitionReference,EmbeddedReference")]))
     ET.SubElement(target, "DefinitionReference", OrderedDict([("DocumentTypeIdentifier","NationalInstruments.ExternalFileSupport.Modeling.ExternalFileType"), ("Name","___ProjectTitle"), ("Bindings","Envoy,DefinitionReference,EmbeddedReference,ProjectItemDragDropDefaultService")]))
     ET.SubElement(target, "DefinitionReference", OrderedDict([("DocumentTypeIdentifier","NationalInstruments.ExternalFileSupport.Modeling.ExternalFileType"), ("Name","___CopyrightYear"), ("Bindings","Envoy,DefinitionReference,EmbeddedReference,ProjectItemDragDropDefaultService")]))
+    ET.SubElement(target, "DefinitionReference", OrderedDict([("DocumentTypeIdentifier","NationalInstruments.ExternalFileSupport.Modeling.ExternalFileType"), ("Name","___ProjectThumbnail"), ("Bindings","Envoy,DefinitionReference,EmbeddedReference,ProjectItemDragDropDefaultService")]))
+    ET.SubElement(target, "DefinitionReference", OrderedDict([("DocumentTypeIdentifier","NationalInstruments.ExternalFileSupport.Modeling.ExternalFileType"), ("Name","___ProjectDescription"), ("Bindings","Envoy,DefinitionReference,EmbeddedReference,ProjectItemDragDropDefaultService")]))
     ET.SubElement(target, "DefinitionReference", OrderedDict([("DocumentTypeIdentifier","NationalInstruments.X3.App.X3FolderLoaderDefinition"), ("Name","vi\.lib_PBR"), ("Bindings","Envoy,DefinitionReference,EmbeddedReference")]))
 
     ## Myblocks go here
@@ -92,6 +94,8 @@ def makeXML(programs, myBlocks, variables, resources):
 
     externalFile(tree, "___ProjectTitle")
     externalFile(tree, "___CopyrightYear")
+    externalFile(tree, "___ProjectThumbnail")
+    externalFile(tree, "___ProjectDescription")
 
     ns = ET.SubElement(tree, "Namespace", Name="vi\.lib_PBR")
     ld = ET.SubElement(ns, "LoaderDefinition", xmlns="http://www.ni.com/LoaderDefinition.xsd")

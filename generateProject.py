@@ -116,9 +116,9 @@ def getPrograms(myblocks):
                 
 myBlocks = getMyBlocks()
 programs = getPrograms(myBlocks)
-variables = getVariables("project.lvprojx")
+variables = getVariables("Project.lvprojx")
 
 tree = makeXML(programs, myBlocks, variables)
 
 indent(tree)
-ET.ElementTree(tree).write("project.lvprojx", xml_declaration=True, encoding="utf-8", method="xml")
+ET.ElementTree(tree).write("Project.lvprojx", xml_declaration=True, encoding="utf-8", method="xml")

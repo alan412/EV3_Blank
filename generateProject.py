@@ -44,6 +44,8 @@ def makeXML(programs, myBlocks, variables, resources):
     ## for each program
     for program in sorted(programs):
         escName = program.replace(" ","\ ")
+        if (escName[0].isdigit()):
+            escName = "\\" + escName
         ET.SubElement(target, "SourceFileReference", OrderedDict([("StoragePath",program+".ev3p"), ("RelativeStoragePath",program+".ev3p"), ("OverridingDocumentTypeIdentifier","X3VIDocument"), ("DocumentTypeIdentifier","NationalInstruments.LabVIEW.VI.Modeling.VirtualInstrument"), ("Name",escName+"\.ev3p"), ("Bindings","Envoy,DefinitionReference,SourceFileReference,X3VIDocument")]))
     ## end of each program
 

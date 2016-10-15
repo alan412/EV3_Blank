@@ -22,6 +22,8 @@ def indent(elem, level=0):
 
 def externalFile(tree, name):
     expName = name.replace(".","\\.")
+    expName = expName.replace(" ","\\ ")
+    expName = expName.replace("-","\\-")
     
     ns = ET.SubElement(tree, "Namespace", Name=expName)
        
@@ -29,7 +31,7 @@ def externalFile(tree, name):
     ET.SubElement(ef, "RelativeStoragePath").text = name
     ET.SubElement(ef, "StoragePath")
 
-def makeXML(programs, myBlocks, variables):
+def makeXML(programs, myBlocks, variables, resources):
     tree = ET.Element("SourceFile",Version="1.0.2.10",xmlns="http://www.ni.com/SourceModel.xsd")
     defaultNS = ET.SubElement(tree, "Namespace",Name="Default")
     project = ET.SubElement(defaultNS, "Project", xmlns="http://www.ni.com/Project.xsd")
@@ -57,6 +59,14 @@ def makeXML(programs, myBlocks, variables):
         ET.SubElement(sf, "X3DocumentSettings", OrderedDict([("ShowFileOnStartup","False"), ("IsTeacherOnlyFile", "False"), ("IsHiddenDependency","False"), ("xmlns","http://www.ni.com/X3DocumentSettings.xsd")]))
         ET.SubElement(target, "DefinitionReference", OrderedDict([("DocumentTypeIdentifier","NationalInstruments.ExternalFileSupport.Modeling.ExternalFileType"), ("Name",myblock+"\.ev3p\.mbxml"), ("Bindings","Envoy,DefinitionReference,EmbeddedReference,ProjectItemDragDropDefaultService")]))
     ## end of myblocks
+
+    ## Resources go here
+    for resource in sorted(resources):
+        escName = resource.replace(" ","\ ")
+        escName = escName.replace("-","\-")
+        escName = escName.replace(".","\.")
+        ET.SubElement(target, "DefinitionReference", OrderedDict([("DocumentTypeIdentifier","NationalInstruments.ExternalFileSupport.Modeling.ExternalFileType"), ("Name", escName), ("Bindings","Envoy,DefinitionReference,EmbeddedReference,ProjectItemDragDropDefaultService")]))
+    # end of resources
 
     settings = ET.SubElement(project, "ProjectSettings")
     ngd = ET.SubElement(settings, "NamedGlobalData", xmlns="http://www.ni.com/X3NamedGlobalData.xsd")
@@ -93,6 +103,12 @@ def makeXML(programs, myBlocks, variables):
     for myblock in sorted(myBlocks):
         externalFile(tree, myblock + ".ev3p.mbxml")
     # end of myblocks
+
+    # for each resource
+    for resource in sorted(resources):
+        externalFile(tree, resource)
+    # end of resources
+
     return tree
     
 def getVariables(filename):
@@ -114,11 +130,20 @@ def getPrograms(myblocks):
             programs.append(base)
     return programs
                 
+def getResources():
+    resources = []
+    for fileName in glob.iglob("*.rsf"):
+        resources.append(fileName)
+    for fileName in glob.iglob("*.rgf"):
+        resources.append(fileName)
+    return resources
+
 myBlocks = getMyBlocks()
 programs = getPrograms(myBlocks)
 variables = getVariables("Project.lvprojx")
+resources = getResources()
 
-tree = makeXML(programs, myBlocks, variables)
+tree = makeXML(programs, myBlocks, variables, resources)
 
 indent(tree)
 ET.ElementTree(tree).write("Project.lvprojx", xml_declaration=True, encoding="utf-8", method="xml")

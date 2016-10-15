@@ -40,7 +40,7 @@ def makeXML(programs, myBlocks, variables):
     ET.SubElement(target, "SourceFileReference", StoragePath="Activity.x3a", RelativeStoragePath="Activity.x3a", DocumentTypeIdentifier="NationalInstruments.GuidedHelpFramework.Model.GuidedHelp", Name="Activity\.x3a")
 
     ## for each program
-    for program in programs:
+    for program in sorted(programs):
         escName = program.replace(" ","\ ")
         ET.SubElement(target, "SourceFileReference", StoragePath=program+".ev3p", RelativeStoragePath=program+".ev3p", OverridingDocumentTypeIdentifier="X3VIDocument", DocumentTypeIdentifier="NationalInstruments.LabVIEW.VI.Modeling.VirtualInstrument", Name=escName+"\.ev3p")
     ## end of each program
@@ -52,7 +52,7 @@ def makeXML(programs, myBlocks, variables):
     ET.SubElement(target, "DefinitionReference", DocumentTypeIdentifier="NationalInstruments.X3.App.X3FolderLoaderDefinition", Name="vi\.lib_PBR", Bindings="Envoy,DefinitionReference,EmbeddedReference")
 
     ## Myblocks go here
-    for myblock in myBlocks:
+    for myblock in sorted(myBlocks):
         sf = ET.SubElement(target, "SourceFileReference", StoragePath=myblock+".ev3p", RelativeStoragePath=myblock+".ev3p", OverridingDocumentTypeIdentifier="X3VIDocument", DocumentTypeIdentifier="NationalInstruments.LabVIEW.VI.Modeling.VirtualInstrument", Name=myblock+"\.ev3p", Bindings="Envoy,DefinitionReference,SourceFileReference,X3VIDocument")
         ET.SubElement(sf, "X3DocumentSettings", ShowFileOnStartup="False",IsTeacherOnlyFile="False", IsHiddenDependency="False", xmlns="http://www.ni.com/X3DocumentSettings.xsd" )
         ET.SubElement(target, "DefinitionReference", DocumentTypeIdentifier="NationalInstruments.ExternalFileSupport.Modeling.ExternalFileType", Name=myblock+"\.ev3p\.mbxml", Bindings="Envoy,DefinitionReference,EmbeddedReference,ProjectItemDragDropDefaultService")
@@ -61,7 +61,7 @@ def makeXML(programs, myBlocks, variables):
     settings = ET.SubElement(project, "ProjectSettings")
     ngd = ET.SubElement(settings, "NamedGlobalData", xmlns="http://www.ni.com/X3NamedGlobalData.xsd")
     ## variables go here
-    for var in variables:
+    for var in sorted(variables):
         var.tag = "Datum"  # to strip off @#$!@#$ namespaces
         ngd.append(var)
     ## end of variables
@@ -90,7 +90,7 @@ def makeXML(programs, myBlocks, variables):
     ET.SubElement(ld, "Location")
 
     # for each myblock
-    for myblock in myBlocks:
+    for myblock in sorted(myBlocks):
         externalFile(tree, myblock + ".ev3p.mbxml")
     # end of myblocks
     return tree
@@ -98,7 +98,7 @@ def makeXML(programs, myBlocks, variables):
 def getVariables(filename):
     tree = ET.parse(filename)
     variables = tree.findall(".//{http://www.ni.com/X3NamedGlobalData.xsd}Datum")
-    return variables    
+    return variables
 
 def getMyBlocks():
     myblocks = []

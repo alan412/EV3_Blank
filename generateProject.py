@@ -1,9 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/env python2.7
 
 import sys
-import xml.etree.ElementTree as ET
-import xml.dom.minidom as minidom
+import lxml.etree as ET
 import glob
+from collections import OrderedDict
     
 def indent(elem, level=0):
   i = "\n" + level*"    "
@@ -22,6 +22,8 @@ def indent(elem, level=0):
 
 def externalFile(tree, name):
     expName = name.replace(".","\\.")
+    expName = expName.replace(" ","\\ ")
+    expName = expName.replace("-","\\-")
     
     ns = ET.SubElement(tree, "Namespace", Name=expName)
        
@@ -29,7 +31,7 @@ def externalFile(tree, name):
     ET.SubElement(ef, "RelativeStoragePath").text = name
     ET.SubElement(ef, "StoragePath")
 
-def makeXML(programs, myBlocks, variables):
+def makeXML(programs, myBlocks, variables, resources):
     tree = ET.Element("SourceFile",Version="1.0.2.10",xmlns="http://www.ni.com/SourceModel.xsd")
     defaultNS = ET.SubElement(tree, "Namespace",Name="Default")
     project = ET.SubElement(defaultNS, "Project", xmlns="http://www.ni.com/Project.xsd")
@@ -37,31 +39,43 @@ def makeXML(programs, myBlocks, variables):
 
     ET.SubElement(target, "ProjectReference", ReferenceName="NationalInstruments.VI.VirtualMachine.Runtime, Version=0.0.0.0", ReferencePath="")
     ET.SubElement(target, "ProjectReference", ReferenceName="NationalInstruments.LabVIEW.CoreRuntime, Version=0.0.0.0", ReferencePath="")
-    ET.SubElement(target, "SourceFileReference", StoragePath="Activity.x3a", RelativeStoragePath="Activity.x3a", DocumentTypeIdentifier="NationalInstruments.GuidedHelpFramework.Model.GuidedHelp", Name="Activity\.x3a")
+    ET.SubElement(target, "SourceFileReference", OrderedDict([("StoragePath","Activity.x3a"),("RelativeStoragePath","Activity.x3a"),("DocumentTypeIdentifier","NationalInstruments.GuidedHelpFramework.Model.GuidedHelp"),("Name","Activity\.x3a")]))
 
     ## for each program
-    for program in programs:
+    for program in sorted(programs):
         escName = program.replace(" ","\ ")
-        ET.SubElement(target, "SourceFileReference", StoragePath=program+".ev3p", RelativeStoragePath=program+".ev3p", OverridingDocumentTypeIdentifier="X3VIDocument", DocumentTypeIdentifier="NationalInstruments.LabVIEW.VI.Modeling.VirtualInstrument", Name=escName+"\.ev3p")
+        if (escName[0].isdigit()):
+            escName = "\\" + escName
+        ET.SubElement(target, "SourceFileReference", OrderedDict([("StoragePath",program+".ev3p"), ("RelativeStoragePath",program+".ev3p"), ("OverridingDocumentTypeIdentifier","X3VIDocument"), ("DocumentTypeIdentifier","NationalInstruments.LabVIEW.VI.Modeling.VirtualInstrument"), ("Name",escName+"\.ev3p"), ("Bindings","Envoy,DefinitionReference,SourceFileReference,X3VIDocument")]))
     ## end of each program
 
-    ET.SubElement(target, "DefinitionReference", DocumentTypeIdentifier="NationalInstruments.ExternalFileSupport.Modeling.ExternalFileType", Name="ActivityAssets\.laz", Bindings="Envoy,DefinitionReference,EmbeddedReference,ProjectItemDragDropDefaultService")
-    ET.SubElement(target, "DefinitionReference", DocumentTypeIdentifier="NationalInstruments.X3.App.X3FolderLoaderDefinition", Name="vi\.lib_", Bindings="Envoy,DefinitionReference,EmbeddedReference")
-    ET.SubElement(target, "DefinitionReference", DocumentTypeIdentifier="NationalInstruments.ExternalFileSupport.Modeling.ExternalFileType", Name="___ProjectTitle", Bindings="Envoy,DefinitionReference,EmbeddedReference,ProjectItemDragDropDefaultService")
-    ET.SubElement(target, "DefinitionReference", DocumentTypeIdentifier="NationalInstruments.ExternalFileSupport.Modeling.ExternalFileType", Name="___CopyrightYear", Bindings="Envoy,DefinitionReference,EmbeddedReference,ProjectItemDragDropDefaultService")
-    ET.SubElement(target, "DefinitionReference", DocumentTypeIdentifier="NationalInstruments.X3.App.X3FolderLoaderDefinition", Name="vi\.lib_PBR", Bindings="Envoy,DefinitionReference,EmbeddedReference")
+    ET.SubElement(target, "DefinitionReference", OrderedDict([("DocumentTypeIdentifier","NationalInstruments.ExternalFileSupport.Modeling.ExternalFileType"), ("Name","ActivityAssets\.laz"), ("Bindings","Envoy,DefinitionReference,EmbeddedReference,ProjectItemDragDropDefaultService")]))
+    ET.SubElement(target, "DefinitionReference", OrderedDict([("DocumentTypeIdentifier","NationalInstruments.X3.App.X3FolderLoaderDefinition"), ("Name","vi\.lib_"), ("Bindings","Envoy,DefinitionReference,EmbeddedReference")]))
+    ET.SubElement(target, "DefinitionReference", OrderedDict([("DocumentTypeIdentifier","NationalInstruments.ExternalFileSupport.Modeling.ExternalFileType"), ("Name","___ProjectTitle"), ("Bindings","Envoy,DefinitionReference,EmbeddedReference,ProjectItemDragDropDefaultService")]))
+    ET.SubElement(target, "DefinitionReference", OrderedDict([("DocumentTypeIdentifier","NationalInstruments.ExternalFileSupport.Modeling.ExternalFileType"), ("Name","___CopyrightYear"), ("Bindings","Envoy,DefinitionReference,EmbeddedReference,ProjectItemDragDropDefaultService")]))
+    ET.SubElement(target, "DefinitionReference", OrderedDict([("DocumentTypeIdentifier","NationalInstruments.ExternalFileSupport.Modeling.ExternalFileType"), ("Name","___ProjectThumbnail"), ("Bindings","Envoy,DefinitionReference,EmbeddedReference,ProjectItemDragDropDefaultService")]))
+    ET.SubElement(target, "DefinitionReference", OrderedDict([("DocumentTypeIdentifier","NationalInstruments.ExternalFileSupport.Modeling.ExternalFileType"), ("Name","___ProjectDescription"), ("Bindings","Envoy,DefinitionReference,EmbeddedReference,ProjectItemDragDropDefaultService")]))
+    ET.SubElement(target, "DefinitionReference", OrderedDict([("DocumentTypeIdentifier","NationalInstruments.X3.App.X3FolderLoaderDefinition"), ("Name","vi\.lib_PBR"), ("Bindings","Envoy,DefinitionReference,EmbeddedReference")]))
 
     ## Myblocks go here
-    for myblock in myBlocks:
-        sf = ET.SubElement(target, "SourceFileReference", StoragePath=myblock+".ev3p", RelativeStoragePath=myblock+".ev3p", OverridingDocumentTypeIdentifier="X3VIDocument", DocumentTypeIdentifier="NationalInstruments.LabVIEW.VI.Modeling.VirtualInstrument", Name=myblock+"\.ev3p", Bindings="Envoy,DefinitionReference,SourceFileReference,X3VIDocument")
-        ET.SubElement(sf, "X3DocumentSettings", ShowFileOnStartup="False",IsTeacherOnlyFile="False", IsHiddenDependency="False", xmlns="http://www.ni.com/X3DocumentSettings.xsd" )
-        ET.SubElement(target, "DefinitionReference", DocumentTypeIdentifier="NationalInstruments.ExternalFileSupport.Modeling.ExternalFileType", Name=myblock+"\.ev3p\.mbxml", Bindings="Envoy,DefinitionReference,EmbeddedReference,ProjectItemDragDropDefaultService")
+    for myblock in sorted(myBlocks):
+        sf = ET.SubElement(target, "SourceFileReference", OrderedDict([("StoragePath",myblock+".ev3p"), ("RelativeStoragePath",myblock+".ev3p"), ("OverridingDocumentTypeIdentifier","X3VIDocument"), ("DocumentTypeIdentifier","NationalInstruments.LabVIEW.VI.Modeling.VirtualInstrument"), ("Name",myblock+"\.ev3p"), ("Bindings","Envoy,DefinitionReference,SourceFileReference,X3VIDocument")]))
+        ET.SubElement(sf, "X3DocumentSettings", OrderedDict([("ShowFileOnStartup","False"), ("IsTeacherOnlyFile", "False"), ("IsHiddenDependency","False"), ("xmlns","http://www.ni.com/X3DocumentSettings.xsd")]))
+        ET.SubElement(target, "DefinitionReference", OrderedDict([("DocumentTypeIdentifier","NationalInstruments.ExternalFileSupport.Modeling.ExternalFileType"), ("Name",myblock+"\.ev3p\.mbxml"), ("Bindings","Envoy,DefinitionReference,EmbeddedReference,ProjectItemDragDropDefaultService")]))
     ## end of myblocks
+
+    ## Resources go here
+    for resource in sorted(resources):
+        escName = resource.replace(" ","\ ")
+        escName = escName.replace("-","\-")
+        escName = escName.replace(".","\.")
+        ET.SubElement(target, "DefinitionReference", OrderedDict([("DocumentTypeIdentifier","NationalInstruments.ExternalFileSupport.Modeling.ExternalFileType"), ("Name", escName), ("Bindings","Envoy,DefinitionReference,EmbeddedReference,ProjectItemDragDropDefaultService")]))
+    # end of resources
 
     settings = ET.SubElement(project, "ProjectSettings")
     ngd = ET.SubElement(settings, "NamedGlobalData", xmlns="http://www.ni.com/X3NamedGlobalData.xsd")
     ## variables go here
-    for var in variables:
+    for var in sorted(variables):
         var.tag = "Datum"  # to strip off @#$!@#$ namespaces
         ngd.append(var)
     ## end of variables
@@ -82,6 +96,8 @@ def makeXML(programs, myBlocks, variables):
 
     externalFile(tree, "___ProjectTitle")
     externalFile(tree, "___CopyrightYear")
+    externalFile(tree, "___ProjectThumbnail")
+    externalFile(tree, "___ProjectDescription")
 
     ns = ET.SubElement(tree, "Namespace", Name="vi\.lib_PBR")
     ld = ET.SubElement(ns, "LoaderDefinition", xmlns="http://www.ni.com/LoaderDefinition.xsd")
@@ -90,15 +106,21 @@ def makeXML(programs, myBlocks, variables):
     ET.SubElement(ld, "Location")
 
     # for each myblock
-    for myblock in myBlocks:
+    for myblock in sorted(myBlocks):
         externalFile(tree, myblock + ".ev3p.mbxml")
     # end of myblocks
+
+    # for each resource
+    for resource in sorted(resources):
+        externalFile(tree, resource)
+    # end of resources
+
     return tree
     
 def getVariables(filename):
     tree = ET.parse(filename)
     variables = tree.findall(".//{http://www.ni.com/X3NamedGlobalData.xsd}Datum")
-    return variables    
+    return variables
 
 def getMyBlocks():
     myblocks = []
@@ -114,11 +136,20 @@ def getPrograms(myblocks):
             programs.append(base)
     return programs
                 
+def getResources():
+    resources = []
+    for fileName in glob.iglob("*.rsf"):
+        resources.append(fileName)
+    for fileName in glob.iglob("*.rgf"):
+        resources.append(fileName)
+    return resources
+
 myBlocks = getMyBlocks()
 programs = getPrograms(myBlocks)
-variables = getVariables("project.lvprojx")
+variables = getVariables("Project.lvprojx")
+resources = getResources()
 
-tree = makeXML(programs, myBlocks, variables)
+tree = makeXML(programs, myBlocks, variables, resources)
 
 indent(tree)
-ET.ElementTree(tree).write("project.lvprojx", xml_declaration=True, encoding="utf-8", method="xml")
+ET.ElementTree(tree).write("Project.lvprojx", xml_declaration=True, encoding="utf-8", method="xml")

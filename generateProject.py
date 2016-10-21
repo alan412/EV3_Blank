@@ -47,7 +47,7 @@ def makeXML(programs, myBlocks, variables, resources):
     ET.SubElement(target, "SourceFileReference", OrderedDict([("StoragePath","Activity.x3a"),("RelativeStoragePath","Activity.x3a"),("DocumentTypeIdentifier","NationalInstruments.GuidedHelpFramework.Model.GuidedHelp"),("Name","Activity\.x3a")]))
 
     ## for each program
-    for program in sorted(programs):
+    for program in sorted(programs,key=str.lower):
         ET.SubElement(target, "SourceFileReference", OrderedDict([("StoragePath",program+".ev3p"), ("RelativeStoragePath",program+".ev3p"), ("OverridingDocumentTypeIdentifier","X3VIDocument"), ("DocumentTypeIdentifier","NationalInstruments.LabVIEW.VI.Modeling.VirtualInstrument"), ("Name",escapeName(program+".ev3p")), ("Bindings","Envoy,DefinitionReference,SourceFileReference,X3VIDocument")]))
     ## end of each program
 
@@ -60,14 +60,14 @@ def makeXML(programs, myBlocks, variables, resources):
     ET.SubElement(target, "DefinitionReference", OrderedDict([("DocumentTypeIdentifier","NationalInstruments.X3.App.X3FolderLoaderDefinition"), ("Name","vi\.lib_PBR"), ("Bindings","Envoy,DefinitionReference,EmbeddedReference")]))
 
     ## Myblocks go here
-    for myblock in sorted(myBlocks):
+    for myblock in sorted(myBlocks,key=str.lower):
         sf = ET.SubElement(target, "SourceFileReference", OrderedDict([("StoragePath",myblock+".ev3p"), ("RelativeStoragePath",myblock+".ev3p"), ("OverridingDocumentTypeIdentifier","X3VIDocument"), ("DocumentTypeIdentifier","NationalInstruments.LabVIEW.VI.Modeling.VirtualInstrument"), ("Name",myblock+"\.ev3p"), ("Bindings","Envoy,DefinitionReference,SourceFileReference,X3VIDocument")]))
         ET.SubElement(sf, "X3DocumentSettings", OrderedDict([("ShowFileOnStartup","False"), ("IsTeacherOnlyFile", "False"), ("IsHiddenDependency","False"), ("xmlns","http://www.ni.com/X3DocumentSettings.xsd")]))
         ET.SubElement(target, "DefinitionReference", OrderedDict([("DocumentTypeIdentifier","NationalInstruments.ExternalFileSupport.Modeling.ExternalFileType"), ("Name",myblock+"\.ev3p\.mbxml"), ("Bindings","Envoy,DefinitionReference,EmbeddedReference,ProjectItemDragDropDefaultService")]))
     ## end of myblocks
 
     ## Resources go here
-    for resource in sorted(resources):
+    for resource in sorted(resources,key=str.lower):
         ET.SubElement(target, "DefinitionReference", OrderedDict([("DocumentTypeIdentifier","NationalInstruments.ExternalFileSupport.Modeling.ExternalFileType"), ("Name", escapeName(resource)), ("Bindings","Envoy,DefinitionReference,EmbeddedReference,ProjectItemDragDropDefaultService")]))
     # end of resources
 
@@ -105,12 +105,12 @@ def makeXML(programs, myBlocks, variables, resources):
     ET.SubElement(ld, "Location")
 
     # for each myblock
-    for myblock in sorted(myBlocks):
+    for myblock in sorted(myBlocks,key=str.lower):
         externalFile(tree, myblock + ".ev3p.mbxml")
     # end of myblocks
 
     # for each resource
-    for resource in sorted(resources):
+    for resource in sorted(resources,key=str.lower):
         externalFile(tree, resource)
     # end of resources
 

@@ -20,12 +20,17 @@ def indent(elem, level=0):
     if level and (not elem.tail or not elem.tail.strip()):
       elem.tail = i
 
+def escapeName(filename):
+    escName = filename
+    escName = escName.replace(".","\\.")
+    escName = escName.replace(" ","\\ ")
+    escName = escName.replace("-","\\-")
+    if (escName[0].isdigit()):
+        escName = "\\" + escName
+    return escName
+
 def externalFile(tree, name):
-    expName = name.replace(".","\\.")
-    expName = expName.replace(" ","\\ ")
-    expName = expName.replace("-","\\-")
-    
-    ns = ET.SubElement(tree, "Namespace", Name=expName)
+    ns = ET.SubElement(tree, "Namespace", Name=escapeName(name))
        
     ef = ET.SubElement(ns, "ExternalFile", xmlns="http://www.ni.com/ExternalFile.xsd")
     ET.SubElement(ef, "RelativeStoragePath").text = name
@@ -43,10 +48,7 @@ def makeXML(programs, myBlocks, variables, resources):
 
     ## for each program
     for program in sorted(programs):
-        escName = program.replace(" ","\ ")
-        if (escName[0].isdigit()):
-            escName = "\\" + escName
-        ET.SubElement(target, "SourceFileReference", OrderedDict([("StoragePath",program+".ev3p"), ("RelativeStoragePath",program+".ev3p"), ("OverridingDocumentTypeIdentifier","X3VIDocument"), ("DocumentTypeIdentifier","NationalInstruments.LabVIEW.VI.Modeling.VirtualInstrument"), ("Name",escName+"\.ev3p"), ("Bindings","Envoy,DefinitionReference,SourceFileReference,X3VIDocument")]))
+        ET.SubElement(target, "SourceFileReference", OrderedDict([("StoragePath",program+".ev3p"), ("RelativeStoragePath",program+".ev3p"), ("OverridingDocumentTypeIdentifier","X3VIDocument"), ("DocumentTypeIdentifier","NationalInstruments.LabVIEW.VI.Modeling.VirtualInstrument"), ("Name",escapeName(program+".ev3p")), ("Bindings","Envoy,DefinitionReference,SourceFileReference,X3VIDocument")]))
     ## end of each program
 
     ET.SubElement(target, "DefinitionReference", OrderedDict([("DocumentTypeIdentifier","NationalInstruments.ExternalFileSupport.Modeling.ExternalFileType"), ("Name","ActivityAssets\.laz"), ("Bindings","Envoy,DefinitionReference,EmbeddedReference,ProjectItemDragDropDefaultService")]))
@@ -66,10 +68,7 @@ def makeXML(programs, myBlocks, variables, resources):
 
     ## Resources go here
     for resource in sorted(resources):
-        escName = resource.replace(" ","\ ")
-        escName = escName.replace("-","\-")
-        escName = escName.replace(".","\.")
-        ET.SubElement(target, "DefinitionReference", OrderedDict([("DocumentTypeIdentifier","NationalInstruments.ExternalFileSupport.Modeling.ExternalFileType"), ("Name", escName), ("Bindings","Envoy,DefinitionReference,EmbeddedReference,ProjectItemDragDropDefaultService")]))
+        ET.SubElement(target, "DefinitionReference", OrderedDict([("DocumentTypeIdentifier","NationalInstruments.ExternalFileSupport.Modeling.ExternalFileType"), ("Name", escapeName(resource)), ("Bindings","Envoy,DefinitionReference,EmbeddedReference,ProjectItemDragDropDefaultService")]))
     # end of resources
 
     settings = ET.SubElement(project, "ProjectSettings")

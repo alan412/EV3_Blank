@@ -74,7 +74,7 @@ def makeXML(programs, myBlocks, variables, resources):
     settings = ET.SubElement(project, "ProjectSettings")
     ngd = ET.SubElement(settings, "NamedGlobalData", xmlns="http://www.ni.com/X3NamedGlobalData.xsd")
     ## variables go here
-    for var in sorted(variables):
+    for var in sorted(variables, key=lambda x: x.attrib['Name']):
         var.tag = "Datum"  # to strip off @#$!@#$ namespaces
         ngd.append(var)
     ## end of variables

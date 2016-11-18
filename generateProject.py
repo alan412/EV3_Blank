@@ -61,9 +61,9 @@ def makeXML(programs, myBlocks, variables, resources):
 
     ## Myblocks go here
     for myblock in sorted(myBlocks,key=str.lower):
-        sf = ET.SubElement(target, "SourceFileReference", OrderedDict([("StoragePath",myblock+".ev3p"), ("RelativeStoragePath",myblock+".ev3p"), ("OverridingDocumentTypeIdentifier","X3VIDocument"), ("DocumentTypeIdentifier","NationalInstruments.LabVIEW.VI.Modeling.VirtualInstrument"), ("Name",myblock+"\.ev3p"), ("Bindings","Envoy,DefinitionReference,SourceFileReference,X3VIDocument")]))
+        sf = ET.SubElement(target, "SourceFileReference", OrderedDict([("StoragePath",myblock+".ev3p"), ("RelativeStoragePath",myblock+".ev3p"), ("OverridingDocumentTypeIdentifier","X3VIDocument"), ("DocumentTypeIdentifier","NationalInstruments.LabVIEW.VI.Modeling.VirtualInstrument"), ("Name",escapeName(myblock+".ev3p")), ("Bindings","Envoy,DefinitionReference,SourceFileReference,X3VIDocument")]))
         ET.SubElement(sf, "X3DocumentSettings", OrderedDict([("ShowFileOnStartup","False"), ("IsTeacherOnlyFile", "False"), ("IsHiddenDependency","False"), ("xmlns","http://www.ni.com/X3DocumentSettings.xsd")]))
-        ET.SubElement(target, "DefinitionReference", OrderedDict([("DocumentTypeIdentifier","NationalInstruments.ExternalFileSupport.Modeling.ExternalFileType"), ("Name",myblock+"\.ev3p\.mbxml"), ("Bindings","Envoy,DefinitionReference,EmbeddedReference,ProjectItemDragDropDefaultService")]))
+        ET.SubElement(target, "DefinitionReference", OrderedDict([("DocumentTypeIdentifier","NationalInstruments.ExternalFileSupport.Modeling.ExternalFileType"), ("Name",escapeName(myblock+".ev3p.mbxml")), ("Bindings","Envoy,DefinitionReference,EmbeddedReference,ProjectItemDragDropDefaultService")]))
     ## end of myblocks
 
     ## Resources go here
